@@ -1,9 +1,8 @@
 package src;
 
-public class Livro extends Produto{
+public class Livro extends Produto implements LivroIF{
     String isbn;
     double preco;
-
     public Livro(Livro livro) {
 		super(livro);
 		this.isbn = livro.isbn;
@@ -44,6 +43,11 @@ public class Livro extends Produto{
 
     public void setPreco(double preco) {
         this.preco = preco;
+    }
+
+    @Override
+    public double preco() {
+        return preco;
     }
     
 }

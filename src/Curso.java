@@ -2,37 +2,57 @@ package src;
 import java.util.List;
 
 public class Curso extends Produto {
-    
+    List<Curso> cursos;
     double preco;
     List<Livro> livros;
     List<Disciplina> disciplinas;
-    protected State state;
 
     public Curso(Curso curso) {
         super(curso);
-        this.preco = curso.preco;
+        this.preco = curso.getPreco();
         this.livros = curso.livros;
         this.disciplinas = curso.disciplinas;
+        this.cursos= curso.cursos;
     }
 
-    public Curso(Produto produto, double preco, List<Livro> livros, List<Disciplina> disciplinas) {
+    public Curso(Produto produto, double preco, List<Livro> livros, List<Disciplina> disciplinas, List<Curso> cursos) {
         super(produto);
         this.preco = preco;
         this.livros = livros;
         this.disciplinas = disciplinas;
-    }
-
-    public Curso(String nome, String codigo, double preco, List<Livro> livros, List<Disciplina> disciplinas, State state) {
-        super(nome, preco);
-        this.codigo= codigo;
-        this.livros = livros;
-        this.disciplinas = disciplinas;
-        this.state= state;
+        this.cursos= cursos;
     }
 
     @Override
     public double getPreco() {
-        return preco;
+        double vi=0;
+        double vii= getPrecoTotalLivros() - getPrecoTotalLivros() * 0.10;
+
+        for (Curso curso : cursos) {
+            vi += curso.preco;
+        }
+        vi += getPrecoDisciplinas();
+        vi-= vi* 0.20;
+
+        return preco = vi+ vii;
+    }
+
+    public double getPrecoTotalLivros(){
+        double valor =0;
+        for (Livro livro : livros) {
+            valor += livro.preco;
+        }
+        return valor;
+    }
+
+    public double getPrecoDisciplinas(){
+        double valor =0;
+
+        for (Disciplina disciplina : this.disciplinas) {
+            valor += disciplina.preco;   
+        }
+
+        return valor;
     }
 
     public void addDisciplinas(List<Disciplina> disciplinas){
@@ -41,6 +61,10 @@ public class Curso extends Produto {
 
     public void addLivros(List<Livro> livros){
         this.livros= livros;
+    }
+
+    public void addCurso(List<Curso> cursos){
+        this.cursos = cursos;
     }
 
     public int chTotal(){
@@ -61,31 +85,4 @@ public class Curso extends Produto {
         }
         return pctTotalCumprido;
     }
-
-    public void avancar(String nome, double pct){
-        this.state.avancar(this, nome, pct);
-    }
-
-    public Situacao checkpoint(){
-        return this.state.checkpoint(this);
-    }
-
-    public void restore(Situacao situacao){
-        this.state.restore(situacao);
-    }
-
-    public void suspender(){
-        this.state = this.state.suspender();
-    };
-    public void darAndamento(){
-        this.state = this.state.darAndamento();
-    };
-    public void concluir(){
-        this.state = this.state.concluir();
-    };
-    public void cancelar(){
-        this.state = this.state.cancelar();
-    };
-
-
 }
